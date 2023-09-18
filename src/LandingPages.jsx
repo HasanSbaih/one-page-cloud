@@ -105,15 +105,15 @@ const LandingPage = () => {
                      {err}
                 </Alert>
             </Snackbar>
-            <h2>Bob The Builder </h2>    
-            <h4>Build infrastructure powerd BY AI and ChatGpt</h4>        
+            <h2>OnePage Cloud</h2>    
+            <h4>Build you cloud infrastructure using AI</h4>        
             <Grid  sx={{ marginBottom:10, width:'1000px'}} container  alignItems="center" >
                     <Grid item >
                     <TextField
                      multiline
                      rows={4}
                      sx={{width:1000}}
-                      onChange={(e) => setSearch(e.target.value)} fullWidth label="Enter the descrption of the infrastructure" variant="outlined" />
+                      onChange={(e) => setSearch(e.target.value)} fullWidth label="Describe what to build" variant="outlined" />
                     </Grid>
                    
             </Grid>
