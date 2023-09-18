@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, TextField, Grid , Box, Stack} from '@mui/material';
+import { Button, TextField, TextArea, Grid , Box, Stack} from '@mui/material';
 import GoJSDiagram from './GoDiagram';
 import {styled} from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
@@ -70,7 +70,7 @@ const LandingPage = () => {
         bobApi.post(`/workspace`, {
            ...workspace
         }).then((res)=> {
-            setLoading(false)
+            GenrateBicebCommand(res.data._id)
             setGenratedId(res.data._id)
         }) .catch((err)=>{
             setLoading(false)
@@ -78,11 +78,10 @@ const LandingPage = () => {
         })
     }
 
-    const GenrateBicebCommand = () => {
-        setLoading(true)
-        bobApi.get(`/ai/generate/${genratedId}/?language=bicep`).then((res)=> {
-            setLoading(false)
+    const GenrateBicebCommand = (res) => {
+        bobApi.get(`/ai/generate/${res}/?language=bicep`).then((res)=> {
             setBiceb(res.data)
+            setLoading(false)
          }) .catch((err)=>{
             setLoading(false)
             setErr('Failed To Genrate Biceb command');
@@ -108,8 +107,19 @@ const LandingPage = () => {
             </Snackbar>
             <h2>Bob The Builder </h2>    
             <h4>Build infrastructure powerd BY AI and ChatGpt</h4>        
-          
-
+            <Grid  sx={{ marginBottom:10, width:'1000px'}} container  alignItems="center" >
+                    <Grid item >
+                    <TextField
+                     multiline
+                     rows={4}
+                     sx={{width:1000}}
+                      onChange={(e) => setSearch(e.target.value)} fullWidth label="Enter the descrption of the infrastructure" variant="outlined" />
+                    </Grid>
+                   
+            </Grid>
+            <Button disabled={!search || loading} onClick={()=>getSearchValue()} variant="contained" color="primary">
+                       Genrate infrastructure Diagram
+                    </Button>
             <Grid  sx={{maxWidth: 1300,height:250, border:'1px solid', padding:4, float: 'right', marginTop:1}} container spacing={2} alignItems="center">
             {workspace.resources &&
                         <GoJSDiagram data={workspace}></GoJSDiagram>
@@ -117,40 +127,19 @@ const LandingPage = () => {
             </Grid>
             <Box sx={{width:'100%', justifyContent: 'center', alignItems:'center', zIndex:999, textAlign: 'center', alignContent:'center',  marginBottom:10}}>
                     <p>{genratedId}</p>
-                    {workspace.resources && <div sx={{zIndex:999}}>                   
-                     {genratedId ?
-                    <Button sx={{zIndex:999}} onClick={()=>GenrateBicebCommand()} variant="contained" color="primary">
-                         Genrate
-                    </Button> 
-                 :
-                    <Button sx={{zIndex:999}} onClick={()=>SaveWorkspace()} variant="contained" color="primary">
-                       Save
+                    {workspace.resources && !biceb && <div sx={{zIndex:999}}>                   
+                    <Button sx={{zIndex:999}} onClick={()=>SaveWorkspace()} disabled={loading} variant="contained" color="primary">
+                       Genrate
                     </Button>
-                    }
-                    {biceb && 
-                        <MarkdownTextarea text={biceb}></MarkdownTextarea>
-                    }
+                    
                     </div>
+                    
+                }
+                {biceb && 
+                    <MarkdownTextarea text={biceb}></MarkdownTextarea>
                 }
             </Box>
-            <Grid sx={{ marginBottom:10}} container spacing={2} alignItems="center">
-                    <Grid item >
-                    <TextField sx={{width:200}} onChange={(e) => setId(e.target.value)} fullWidth label="Enter WorkSpace ID" variant="outlined" />
-                    </Grid>
-                    <Grid item>
-                    <Button disabled={!id} sx={{width:100}} onClick={()=>getWorkSpace()} variant="contained" color="primary">
-                        Get
-                    </Button>
-                    </Grid>
-                    <Grid item >
-                    <TextField sx={{width:450}} onChange={(e) => setSearch(e.target.value)} fullWidth label="Enter the descrption of the infrastructure" variant="outlined" />
-                    </Grid>
-                    <Grid item>
-                    <Button disabled={!search} onClick={()=>getSearchValue()} variant="contained" color="primary">
-                       Genrate infrastructure Diagram
-                    </Button>
-                    </Grid>
-            </Grid>
+           
      </Container>
     )
 }

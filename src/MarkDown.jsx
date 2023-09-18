@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { Button, TextareaAutosize, Box, Typography } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+function CodeBlock(props) {
+  return (
+      <SyntaxHighlighter language={props.language} style={solarizedlight}>
+          {props.value}
+      </SyntaxHighlighter>
+  );
+}
 
 function MarkdownTextarea({text}) {
   const handleCopyToClipboard = () => {
@@ -20,9 +31,13 @@ function MarkdownTextarea({text}) {
         <Typography variant="h6" gutterBottom>
           Markdown Preview:
         </Typography>
-        <ReactMarkdown>
-          {text.data}
-        </ReactMarkdown>
+        <div style={{ height: '300px', overflowY: 'auto' , border:'1px solid', borderRadius: 8, textAlign:'left', padding:16 }}>
+          <ReactMarkdown 
+          
+          >
+            {text.data}
+          </ReactMarkdown>
+        </div>
       </Box>
     </Box>
   );
